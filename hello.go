@@ -13,7 +13,7 @@ var Greetings = map[string]string{
   }
 
 
-func hello(lang string) (greeting string, err error) {
+func Hello(lang string) (greeting string, err error) {
 	if gr, ok := Greetings[lang]; ok {
 		return gr, nil
 	} else {

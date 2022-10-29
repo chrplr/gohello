@@ -6,8 +6,8 @@ Create an _empty_ repository 'gohello' on http://github.com (do not add a README
 
 Create the local folder for the library
 
-    mkdir -p $GOPATH/github.com/chrplr/gohello
-    cd $GOPATH/github.com/chrplr/gohello
+    mkdir -p $GOPATH/src/github.com/chrplr/gohello
+    cd $GOPATH/src/github.com/chrplr/gohello
     go mod init github.com/chrplr/gohello
 
 
@@ -29,7 +29,7 @@ var Greetings = map[string]string{
   }
 
 
-func hello(lang string) (greeting string, err error) {
+func Hello(lang string) (greeting string, err error) {
 	if gr, ok := Greetings[lang]; ok {
 		return gr, nil
 	} else {
@@ -66,8 +66,26 @@ Using the module
 Create a new go project, that is, an empty folder
 
 
-    mkdir myapp
-    cd myapp
+    mkdir ~/GOROOT/src/myapp
+    cd ~/GOROOT/src/myapp
+	
+Create `main.go`:
 
      
+```{go}
+package main
 
+import (
+	"fmt"
+	"github.com/chrplr/gohello"
+)
+	
+
+func main() {
+	fmt.Println(gohello.Hello("Chinese"))
+}
+```
+
+    go mod init
+    go get go get github.com/chrplr/gohello
+	go run .
