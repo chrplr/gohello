@@ -15,7 +15,7 @@ I proceed in three steps:
 
 ## How to how to create a local library inside a project. 
 
-As code grows in complexity, it is always a good idea to split it in a main code and supporting libraries (sets of related objects and functions that focus on apurpose). This is achieved, in Go, by spliting the code into different _packages_ that can be imported from your main code using the `import` statement. If you just want a library to be local to project and distribute its source code along the main application, it is as simple as creating a subfolder in your main  project folder. For example, here is the structure of a trivial project using a local library `mylib`:
+As code grows in complexity, it is always a good idea to split it in a main code and supporting libraries (sets of related objects and functions that focus on apurpose). This is achieved, in Go, by spliting the code into different _packages_ that can be imported from your main code using the `import` statement. If you just want the library to be local to a project, and distribute it along the source code of the main application, it is as simple as creating a subfolder in your main  project folder. For example, here is the structure of a trivial project using a local library `mylib`:
 
 
 ```
@@ -59,11 +59,10 @@ EOF
 go fmt ./...
 ```
 
-To run the app, execute 
+To run the app, execute (inside `myapp` folder):
 
     go run . 
 	
-(inside `myapp` folder)
 
 To generate a executable, use:
 
@@ -74,7 +73,7 @@ To generate an executable to will be saved in `$GOPATH/bin`, use:
     go install .
 
 
-The code of the main application is `main.go`. As it imports the library thanks to the line `import "myapp/mylib"`, it can use its public functions, indicated by names starting with an uppercase letter. 
+The code of the main application is `main.go`. As it imports the library thanks to the line `import "myapp/mylib"`, it can use its function `Test()` (which is public as indicated its name starting with an uppercase letter). 
 
 Remarks:
 
@@ -90,7 +89,9 @@ Remarks:
 To create an _independent_ library in Go which can be reused in several applications, you must tranform it into a _module_, that is, create a `go.mod` file at the root of the project.
 
 Before anything, you must decide about the module's name, technically known as its _module path_.
-As I plan to publish the module on github, I have chosen to name it `github.com/chrplr/gohello`,
+As I plan to publish the module on github, I have chosen to name it `github.com/chrplr/gohello`
+
+
 Remarks:
 
 - `chrplr` is my username on <http://github.com>, therefore you need to change it and replace it with you own identifier in everything that follows. Otherwise, it will not work (unless you have managed to steal my credentials on github ;-) ).
