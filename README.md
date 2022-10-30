@@ -92,7 +92,9 @@ To make some folder containing packages an independent library in Go, you must t
 
 First, you must decide about the module's name, also known as the `module path`.
 
-Because we plan to publish the module on github, I have chosen to name it `github.com/chrplr/gohello`,  (see <https://go.dev/doc/modules/managing-dependencies#naming_module> for advice about naming a module).
+Because I plan to publish the module on github, I have chosen to name it `github.com/chrplr/gohello`,  (see <https://go.dev/doc/modules/managing-dependencies#naming_module> for advice about naming a module).
+
+Note that `chrplr` is my username on github.com, therefore you need to change it and replace it with you own identifier in everything that follows. Otherwise, it will not work (unless you have managed to steal my credentials on github ;-) ).
 
 Let us start by creating a local folder for the module and initialize the go.mod file with the module path:
 
@@ -150,26 +152,34 @@ Remarks:
 
 ## Link to github
 
-Here, I assume that you have an account on <http://github.com>.
+Here, I assume that you have an account on <http://github.com>. 
 
-Create a new _empty_ repository 'gohello' on http://github.com (do not add a README or LICENCE file,...), and associate it to your local repo, that is, run the following in the folder containing your module:
+First, you need to create a new _empty_ repository `gohello` on <http://github.com> (do not add a `README` nor a `LICENCE` file)
+
+Second, you need to associate it to your local repository, that is, the folder containing your module, with the following commands:
 
 	git init
-	git remote add origin git@github.com:chrplr/gohello.git
 
-    # Commit it:
+    ID=chrplr  # replace by your own ID
+	git remote add origin git@github.com:"$ID"/gohello.git
+
+    # create first snapshot
 
     git add hello.go go.mod README.md
 	git commit -m 'first commit'
 	git tag v0.0.1
 	git branch -M main
 
-     # Push the local repo to github:
+     # push the local repo to github:
 
 	git push -u origin main
 
 
-Next time you make changes to the library's source code, you will use `git add ...`, `git commit ...` and `git push` to publish the new version on github.
+Remarks:
+
+- remember to replace `chrplr` by your own github username remote repository name on the seconde line of code below. Use `git remote rm git@github.com:"/chrplr/gohello.git` if you have added my repo by mistake.
+
+- Next time you make changes to the library's source code, you will use `git add ...`, `git commit ...` and `git push` to publish the new version on github.
 
 ## Importing the module in another project
 
