@@ -3,14 +3,11 @@ How to create libraries in Go
 
 Date: 2022-10-30
 
-Finding out how to create your own libraries in Go is not obvious. The process is actually not at all complicated. Here, I show how to do it in practice. 
-
-I proceed in three steps:
+Finding out how to create your own libraries in Go is not obvious. The process is actually not at all complicated. I show here how to do it in practice, proceeding in three steps:
 
 1. I briefly recapitulate how to create a local library inside a project
 2. I show how to make a library a independent module that can be reused across projects
 3. I show how this independent module can be reused locally, or from the internet (that is, on github.com)
-
 
 
 ## How to how to create a local library inside a project. 
@@ -97,7 +94,6 @@ Remarks:
 - `chrplr` is my username on <http://github.com>, therefore you need to change it and replace it with you own identifier in everything that follows. Otherwise, it will not work (unless you have managed to steal my credentials on github ;-) ).
 
 
-
 Let us start by creating a local folder for the module and initialize the go.mod file with the module path:
 
     mkdir -p $GOPATH/src/github.com/chrplr/gohello
@@ -152,9 +148,11 @@ Remarks:
 - The name of this file does not matter! It could as well be named `main.go`, or `mylib.go`. What matter is the first line of the file that specifies the package. You can split your source code into several files that all start with the same package line):
 
 
-## Link to github.com
+### Link it github.com
 
-Here, I assume that you have an account on <http://github.com>. 
+This step is only if you want to publish your code on github so that users can download it using `go get github.com/chrplr/gohello`. It you just want to keep it on your local filesystem, you can skip to the next section. 
+
+Here, I assume that you have an account on <http://github.com>, otherwise you will need to register on it (or an equivalent site handling git repositories).
 
 Firstly, create a new _empty_ repository `gohello` on <http://github.com>, that is, do not add a `README` nor a `LICENCE` file.
 
@@ -214,7 +212,7 @@ go mod init myapp
 
 Now you have to decide if you want to use the local copy of the `github.com/chrplr/gohello` library, or the copy which is on the internet. 
 
-In order to use the version of the module that is on github.com, you must run:
+In order to use a version of the module made available on github.com, you must run:
 
     go get github.com/chrplr/gohello
 
