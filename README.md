@@ -1,16 +1,17 @@
 How to create libraries in Go
 =====================================
 
-Time-stamp: <2022-10-30 08:58:41 christophe@pallier.org>
+Date: 2022-10-30
 
-This document explains how to write a library in Go. 
-Thanks in advance for contacting me if you notice any mistake or inaccuracy!
+How to create your own libraries in Go is not obvious. The process is actually not at all complicated. Here, I show how to do it in practice. 
 
 I proceed in three steps:
 
 1. I briefly recapitulate how to create a local library inside a project
 2. I show how to make a library a independent module that can be reused accross projects
 3. I show how this independent module can be reused locally, or from the internet (that is, on github.com)
+
+Thanks in advance for contacting me <christophe@pallier.org> if you notice any mistake or inaccuracy!
 
 ## How to how to create a local library inside a project. 
 
@@ -93,28 +94,22 @@ First, you must decide about the module's name, also known as the `module path`.
 
 Because we plan to publish the module on github, I have chosen to name it `github.com/chrplr/gohello`,  (see <https://go.dev/doc/modules/managing-dependencies#naming_module> for advice about naming a module).
 
-Let us start by creating a local folder for the module:
+Let us start by creating a local folder for the module and initialize the go.mod file with the module path:
 
     mkdir -p $GOPATH/src/github.com/chrplr/gohello
     cd $GOPATH/src/github.com/chrplr/gohello
 	
+	go mod init github.com/chrplr/gohello 
+
+	
 Remark:
+
 
 - There is no obligation to create the folder `gohello` within `github.com/chrplr/gohello`, nor in `$GOPATH`; the folder can be created anywhere in your file system (the path to this folder _does not have to_ contain `github.com/chrplr`). It is just a convention to keep track of modules posted on github.com.
 
-
-Let us creates `go.mod` with:
-	
-    go mod init github.com/chrplr/gohello 
-	
-Remark:
-
 - If you are working inside `$GOPATH/src`, you can just type `go mod init`. Then, the module path will be automatically generated from the relative path.) 
 
-
-Next, we create the file `hello.go` 
-
-
+Next, we create the file `hello.go` that will contain the library functions: 
 
 ```
 cat <<EOF >hello.go
@@ -141,12 +136,10 @@ func Hello(lang string) (greeting string, err error) {
 	} 
 }
 EOF
+
+# Check that the code compiles
+go build .
 ```
-
-Check that the code compiles:
-
-	go build .
-
 
 Remarks:
 
@@ -164,31 +157,28 @@ Create a new _empty_ repository 'gohello' on http://github.com (do not add a REA
 	git init
 	git remote add origin git@github.com:chrplr/gohello.git
 
-Commit it:
+    # Commit it:
 
     git add hello.go go.mod README.md
 	git commit -m 'first commit'
 	git tag v0.0.1
 	git branch -M main
 
-Then push the local repo to github:
+     # Push the local repo to github:
 
 	git push -u origin main
 
 
-Next time you make changes to the library's source code, use `git add`, `git commit` and `git push` to publish the new version on github.
+Next time you make changes to the library's source code, you will use `git add ...`, `git commit ...` and `git push` to publish the new version on github.
 
 ## Importing the module in another project
 
-Create a new go project, that is, an empty folder, at the same level as the `github.com` folder (that is, for me, in `$GOPATH/src`)
+Let's create a new go project that make use of our library:
 
-    mkdir ~/GOROOT/src/myapp
-    cd ~/GOROOT/src/myapp
-	
-Then create `main.go`:
-
-     
 ```
+mkdir ~/$GOPATH/src/myapp
+cd ~/$GOPATH/src/myapp
+
 cat <<EOF >main.go
 package main
 
@@ -198,45 +188,48 @@ import (
 )
 
 func main() {
-	msg, err := gohello.Hello("Chiese")
+	msg, err := gohello.Hello("Chinese")
 	if err != nil {
 		fmt.Errorf("%s", err)
 	}
 	fmt.Println(msg)
 }
 EOF
+
+go mod init myapp
 ```
 
-Run:
 
-    go mod init myapp
+Now you have to decide if you want to use the local copy of the github.com/chrplr/gohello library, or the copy which is on the internet. 
 
+### To use the version of the module which is on github
 
-Now you have to decide if you want to use the local copy of the github.com/chrplr/gohello library, or the internet copy. 
+    go get github.com/chrplr/gohello
+	cat go.mod
+	go run .
+	
+This will download the `github.com/chrplr/gohello` module in `$GOPATH/pkg/mod/` and save this information in the `go.mod`.
 
 
 ### To use the local copy of the module in your `src` tree
 
 To use the original module `github.com/chrplr/gohello`, assuming it is located in the the same folder as `myapp` (that is, `$GOPATH/src` for me), you can use:
 	
-    go mod edit -replace github.com/chrplr/gohello=../github.com/chrplr/gohello  # to use the local copy of the module
+	# Use the local copy of the module
+    go mod edit -replace github.com/chrplr/gohello=../github.com/chrplr/gohello 
 	go mod tidy
-    cat go.mod  # to check 
+    cat go.mod
 	go run .
 
-### To use the version of the module which is on github
-
-    go get github.com/chrplr/gohello
-	
-This will download the `gohello` module in `$GOPATH/pkg/mod/github.com/chrplr/`
 
 
-### Run or build your app
+### Run, build or install your app
 	
 	go run .
 	go build .
+	go install .
 	
-If you distribute `myapp`'s source code, do not forget remove the line starting with `replace` in `go.mod`
+If you distribute `myapp`'s source code and used a local copy of the library, do not forget to clean `go.mod` by removing the line starting with `replace`.
 
 ## Final remarks
 
