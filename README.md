@@ -8,14 +8,14 @@ Finding out how to create your own libraries in Go is not obvious. The process i
 I proceed in three steps:
 
 1. I briefly recapitulate how to create a local library inside a project
-2. I show how to make a library a independent module that can be reused accross projects
+2. I show how to make a library a independent module that can be reused across projects
 3. I show how this independent module can be reused locally, or from the internet (that is, on github.com)
 
 
 
 ## How to how to create a local library inside a project. 
 
-As code grows in complexity, it is always a good idea to split it in a main code and supporting libraries (sets of related objects and functions that focus on apurpose). This is achieved, in Go, by spliting the code into different _packages_ that can be imported from your main code using the `import` statement. If you just want the library to be local to a project, and distribute it along the source code of the main application, it is as simple as creating a subfolder in your main  project folder. For example, here is the structure of a trivial project using a local library `mylib`:
+As code grows in complexity, it is always a good idea to split it in a main code and supporting libraries (sets of related objects and functions that focus on a purpose). This is achieved, in Go, by splitting the code into different _packages_ that can be imported from your main code using the `import` statement. If you just want the library to be local to a project, and distribute it along the source code of the main application, this is as simple as creating a subfolder in your main  project folder. For example, here is the structure of a trivial project using a local library `mylib`:
 
 
 ```
@@ -86,7 +86,7 @@ Remarks:
 
 ## How to create an independent module
 
-To create an _independent_ library in Go which can be reused in several applications, you must tranform it into a _module_, that is, create a `go.mod` file at the root of the project.
+To create an _independent_ library in Go which can be reused in several applications, you must transform it into a _module_, that is, create a `go.mod` file at the root of the project.
 
 Before anything, you must decide about the module's name, technically known as its _module path_.
 As I plan to publish the module on github, I have chosen to name it `github.com/chrplr/gohello`
@@ -152,13 +152,13 @@ Remarks:
 - The name of this file does not matter! It could as well be named `main.go`, or `mylib.go`. What matter is the first line of the file that specifies the package. You can split your source code into several files that all start with the same package line):
 
 
-## Link to github
+## Link to github.com
 
 Here, I assume that you have an account on <http://github.com>. 
 
-First, you need to create a new _empty_ repository `gohello` on <http://github.com> (do not add a `README` nor a `LICENCE` file)
+Firstly, create a new _empty_ repository `gohello` on <http://github.com>, that is, do not add a `README` nor a `LICENCE` file.
 
-Second, you need to associate it to your local repository, that is, the folder containing your module, with the following commands:
+Secondly, associate it to your local repository. From the root folder of your module, and run the following commands:
 
 	git init
 
@@ -179,9 +179,9 @@ Second, you need to associate it to your local repository, that is, the folder c
 
 Remarks:
 
-- remember to replace `chrplr` by your own github username remote repository name on the seconde line of code below. Use `git remote rm git@github.com:"/chrplr/gohello.git` if you have added my repo by mistake.
+- Remember to replace `chrplr` by your own github.com username remote repository name on the second line of code below. Use `git remote rm git@github.com:"/chrplr/gohello.git` if you have added my repository by mistake.
 
-- Next time you make changes to the library's source code, you will use `git add ...`, `git commit ...` and `git push` to publish the new version on github.
+- Next time you make changes to the library's source code, you will use `git add ...`, `git commit ...` and `git push` to publish the new version on github.com
 
 ## Importing the module in another project
 
@@ -212,38 +212,27 @@ go mod init myapp
 ```
 
 
-Now you have to decide if you want to use the local copy of the github.com/chrplr/gohello library, or the copy which is on the internet. 
+Now you have to decide if you want to use the local copy of the `github.com/chrplr/gohello` library, or the copy which is on the internet. 
 
-### To use the version of the module which is on github
+In order to use the version of the module that is on github.com, you must run:
 
     go get github.com/chrplr/gohello
-	cat go.mod
-	go run .
+
+This will download the `github.com/chrplr/gohello` module in `$GOPATH/pkg/mod/` and save relevant information in `go.mod`.
+
+Alternatively, if you want to use the local copy of the module `github.com/chrplr/gohello`, assuming that it is located in the same folder as `myapp` (that is, `$GOPATH/src` for me), you can use:
 	
-This will download the `github.com/chrplr/gohello` module in `$GOPATH/pkg/mod/` and save this information in the `go.mod`.
+     go mod edit -replace github.com/chrplr/gohello=../github.com/chrplr/gohello 
 
 
-### To use the local copy of the module in your `src` tree
-
-To use the original module `github.com/chrplr/gohello`, assuming it is located in the the same folder as `myapp` (that is, `$GOPATH/src` for me), you can use:
-	
-	# Use the local copy of the module
-    go mod edit -replace github.com/chrplr/gohello=../github.com/chrplr/gohello 
-	go mod tidy
-    cat go.mod
-	go run .
-
-
-
-### Run, build or install your app
+Now, to run, build or install your app:
 	
 	go run .
 	go build .
 	go install .
 	
-If you distribute `myapp`'s source code and used a local copy of the library, do not forget to clean `go.mod` by removing the line starting with `replace`.
 
-
+If you distribute `myapp`'s source code and have used a local copy of the library, do not forget to clean `go.mod` by removing the line starting with `replace`. and run `go mod tidy` to clean `go.mod`.
 
 
 ## To go further
