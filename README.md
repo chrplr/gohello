@@ -3,7 +3,7 @@ How to create libraries in Go
 
 Date: 2022-10-30
 
-How to create your own libraries in Go is not obvious. The process is actually not at all complicated. Here, I show how to do it in practice. 
+Finding out how to create your own libraries in Go is not obvious. The process is actually not at all complicated. Here, I show how to do it in practice. 
 
 I proceed in three steps:
 
@@ -11,16 +11,22 @@ I proceed in three steps:
 2. I show how to make a library a independent module that can be reused accross projects
 3. I show how this independent module can be reused locally, or from the internet (that is, on github.com)
 
-Thanks in advance for contacting me <christophe@pallier.org> if you notice any mistake or inaccuracy!
+
 
 ## How to how to create a local library inside a project. 
 
-As code grows in complexity, it is always a good idea to split it in a main code and supporting libraries (sets of related objects and functions that focus on apurpose).
+As code grows in complexity, it is always a good idea to split it in a main code and supporting libraries (sets of related objects and functions that focus on apurpose). This is achieved, in Go, by spliting the code into different _packages_ that can be imported from your main code using the `import` statement. If you just want a library to be local to project and distribute its source code along the main application, it is as simple as creating a subfolder in your main  project folder. For example, here is the structure of a trivial project using a local library `mylib`:
 
-This is achieved, in Go, by spliting the code into different packages that can be imported from your main code using the `import` statement.
 
-If you just want a library to be local and its source code distributed with your main application, it is as simple as creating a subfolder in your main  project folder. The following code generates a example project with a library `mylib`:
+```
+myapp/
+├── go.mod
+├── main.go
+└── mylib
+    └── mylib.go
+```
 
+which can be generated it from the following code (run it!):
 
 ```
 mkdir myapp
@@ -53,16 +59,6 @@ EOF
 go fmt ./...
 ```
 
-After running the above code, the project has the following structure:
-
-```
-myapp/
-├── go.mod
-├── main.go
-└── mylib
-    └── mylib.go
-```
-
 To run the app, execute 
 
     go run . 
@@ -77,24 +73,29 @@ To generate an executable to will be saved in `$GOPATH/bin`, use:
 
     go install .
 
+
+The code of the main application is `main.go`. As it imports the library thanks to the line `import "myapp/mylib"`, it can use its public functions, indicated by names starting with an uppercase letter. 
+
 Remarks:
 
-- in `main.go`, you need to import `"myapp/mylib"` and not just `"mylib"`, even if the relative path is `./mylib`
+- Despite the fact that the relative path is `./mylib`, in `main.go`, you need to import `"myapp/mylib"` and not just `"mylib"`.
 
-- the library `mylib` is _not_ a Go module, only a package; there is no `go.mod` file inside `./mylib`
+- The library `mylib` is _not_ a Go module, only a package; there is no `go.mod` file inside `./mylib`
 
-- since go 1.5, there is a reserved name for a special subfolder, `vendor`, which can hold copies of libraries used by the project. You do not need to specify `vendor` in the `import` statement. (see <https://blog.gopheracademy.com/advent-2015/vendor-folder/> for more information) 
+- Since go 1.5, there is a reserved name for a special subfolder, `vendor`, which can hold copies of libraries used by the project. You do not need to specify `vendor` in the `import` statement. (see <https://blog.gopheracademy.com/advent-2015/vendor-folder/> for more information) 
 
 
 ## How to create an independent module
 
-To make some folder containing packages an independent library in Go, you must tranform it into a  _module_, that is create a `go.mod` file at its root.
+To create an _independent_ library in Go which can be reused in several applications, you must tranform it into a _module_, that is, create a `go.mod` file at the root of the project.
 
-First, you must decide about the module's name, also known as the `module path`.
+Before anything, you must decide about the module's name, technically known as its _module path_.
+As I plan to publish the module on github, I have chosen to name it `github.com/chrplr/gohello`,
+Remarks:
 
-Because I plan to publish the module on github, I have chosen to name it `github.com/chrplr/gohello`,  (see <https://go.dev/doc/modules/managing-dependencies#naming_module> for advice about naming a module).
+- `chrplr` is my username on <http://github.com>, therefore you need to change it and replace it with you own identifier in everything that follows. Otherwise, it will not work (unless you have managed to steal my credentials on github ;-) ).
 
-Note that `chrplr` is my username on github.com, therefore you need to change it and replace it with you own identifier in everything that follows. Otherwise, it will not work (unless you have managed to steal my credentials on github ;-) ).
+
 
 Let us start by creating a local folder for the module and initialize the go.mod file with the module path:
 
@@ -241,14 +242,10 @@ To use the original module `github.com/chrplr/gohello`, assuming it is located i
 	
 If you distribute `myapp`'s source code and used a local copy of the library, do not forget to clean `go.mod` by removing the line starting with `replace`.
 
-## Final remarks
-
-- The only difference between a library and an application is that a library does not contain a package `main`.
-
-- Where do modules obtained form the Net with `go get` go? Answer: in `$GOPATH/pkg/mod`. If `GOPATH` does not exit, it is `$HOME/go`
 
 
-For more information:
 
-- <https://go.dev/doc/tutorial/create-module>
+## To go further
+
+- Check <https://go.dev/doc/modules/managing-dependencies#naming_module> for advice about naming a module.
 - To understand in details the algorithm use by Go to locate libraries, I recommend reading <https://lucasfcosta.com/2017/02/07/Understanding-Go-Dependency-Management.html> 
