@@ -3,7 +3,10 @@ How to create libraries in Go
 
 Date: 2022-10-30
 
-Finding out how to create your own libraries in Go is not obvious. The process is actually not at all complicated. I show here how to do it in practice, proceeding in three steps:
+This is the readme file of http://github.com/chrplr/gohello. For a more nicely formatted version of this file, go to <https://chrplr.github.io/gohello>
+
+
+Finding out how to create your own libraries in Go is not obvious. The process is actually not complicated at all. I show here how to do it in practice, proceeding in three steps:
 
 1. I briefly recapitulate how to create a local library inside a project
 2. I show how to make a library a independent module that can be reused across projects
@@ -65,18 +68,16 @@ To generate a executable, use:
 
     go build .
 
-To generate an executable to will be saved in `$GOPATH/bin`, use:
+To generate an executable that will be saved in `$GOPATH/bin`, use:
 
     go install .
 
 
-The code of the main application is `main.go`. As it imports the library thanks to the line `import "myapp/mylib"`, it can use its function `Test()` (which is public as indicated its name starting with an uppercase letter). 
+The code of the main application is `main.go`. As it imports the library thanks to the line `import "myapp/mylib"`, it can use its function `Test()` (which is public as indicated by the fact that its name starts with an uppercase letter). 
 
-Remarks:
+Despite the fact that the relative path is `./mylib`, in `main.go`, you need to import `"myapp/mylib"` and not just `"mylib"`. This is because the first token (`myapp`) must be the name of a _module_. myapp is a module, because it contains a `go.mod` file. The library `mylib` is _not_ a Go module, only a package; there is no `go.mod` file inside `./mylib`.
 
-- Despite the fact that the relative path is `./mylib`, in `main.go`, you need to import `"myapp/mylib"` and not just `"mylib"`.
-
-- The library `mylib` is _not_ a Go module, only a package; there is no `go.mod` file inside `./mylib`
+Remark:
 
 - Since go 1.5, there is a reserved name for a special subfolder, `vendor`, which can hold copies of libraries used by the project. You do not need to specify `vendor` in the `import` statement. (see <https://blog.gopheracademy.com/advent-2015/vendor-folder/> for more information) 
 
@@ -85,7 +86,8 @@ Remarks:
 
 To create an _independent_ library in Go which can be reused in several applications, you must transform it into a _module_, that is, create a `go.mod` file at the root of the project.
 
-Before anything, you must decide about the module's name, technically known as its _module path_.
+Before anything, you must decide about the module's name, technically known as its _module path_. 
+
 As I plan to publish the module on github, I have chosen to name it `github.com/chrplr/gohello`
 
 
